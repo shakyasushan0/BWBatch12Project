@@ -1,0 +1,20 @@
+.product-title {
+  height: 2.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rating svg {
+  color: #ff9f20;
+}
+
+.rating span {
+  margin: 0.1rem;
+}
+
+.rating-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding-left: 0.6rem;
+}

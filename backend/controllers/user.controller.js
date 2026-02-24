@@ -26,4 +26,29 @@ const login = async (req, res) => {
   });
 };
 
-export { register, login };
+const logout = async (req, res) => {
+  res.clearCookie("jwt");
+  res.send({ message: "Logout success!" });
+};
+
+const getProfile = async (req, res) => {
+  const user = req.user;
+  res.send(user);
+};
+
+const updateProfile = async (req, res) => {
+  const { name, email, password } = req.body;
+  const userId = req.user._id;
+  const user = await User.findById(userId);
+
+  user.email = email || user.email;
+  user.name = name || user.name;
+
+  if (password) {
+    user.password = password;
+  }
+  await user.save();
+  res.send({ message: "Profile updated!" });
+};
+
+export { register, login, logout, getProfile, updateProfile };

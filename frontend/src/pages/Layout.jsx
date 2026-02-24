@@ -6,7 +6,7 @@ function LayoutPage() {
   return (
     <>
       <Header />
-      <main className="my-3">
+      <main className="my-3 container">
         <Outlet />
       </main>
       <Footer />
