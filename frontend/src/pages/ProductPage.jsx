@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
-import { Image, Row, Col, ListGroup } from "react-bootstrap";
+import {
+  Image,
+  Row,
+  Col,
+  ListGroup,
+  Card,
+  Badge,
+  Button,
+} from "react-bootstrap";
 import axios from "axios";
 import Rating from "../components/Rating";
 
@@ -34,7 +42,39 @@ function ProductPage() {
             <ListGroup.Item>{product.description}</ListGroup.Item>
           </ListGroup>
         </Col>
-        <Col md={3}></Col>
+        <Col md={3}>
+          <Card>
+            <ListGroup variant="flush">
+              <ListGroup.Item>
+                <Row>
+                  <Col>
+                    <strong>Price</strong>
+                  </Col>
+                  <Col>${product.price}</Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>
+                    <strong>Status</strong>
+                  </Col>
+                  <Col>
+                    {product.countInStock ? (
+                      <Badge bg="success">In Stock</Badge>
+                    ) : (
+                      <Badge bg="danger">Out of Stock</Badge>
+                    )}
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Button variant="dark" disabled={!product.countInStock}>
+                  Add to Cart
+                </Button>
+              </ListGroup.Item>
+            </ListGroup>
+          </Card>
+        </Col>
       </Row>
     </>
   );
