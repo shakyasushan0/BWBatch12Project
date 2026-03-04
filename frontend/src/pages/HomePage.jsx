@@ -3,6 +3,8 @@ import axios from "axios";
 import Product from "../components/Product";
 import { Row, Col } from "react-bootstrap";
 import { useGetProductsQuery } from "../slices/productApiSlice";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
 
 function HomePage() {
   // const [products, setProducts] = useState([]);
@@ -17,9 +19,9 @@ function HomePage() {
     <>
       <h2>Latest Products</h2>
       {isLoading ? (
-        <h1>Loading...</h1>
+        <Loader />
       ) : error ? (
-        <h2>{error?.data?.message || error?.error}</h2>
+        <Message type="danger">{error?.data?.message || error?.error}</Message>
       ) : (
         <Row>
           {products.map((product) => (

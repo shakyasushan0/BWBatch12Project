@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useParams, useNavigate } from "react-router";
 import { useGetProductByIdQuery } from "../slices/productApiSlice";
 import {
   Image,
@@ -15,15 +15,18 @@ import axios from "axios";
 import Rating from "../components/Rating";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../slices/cartSlice";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
 
 function ProductPage() {
   const [qty, setQty] = useState(1);
   const { id } = useParams();
   const { data: product, isLoading, error } = useGetProductByIdQuery(id);
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const addToCartHandler = () => {
     dispatch(addToCart({ ...product, qty }));
+    navigate("/cart");
   };
   return (
     <>
@@ -31,9 +34,9 @@ function ProductPage() {
         Go Back
       </Link>
       {isLoading ? (
-        <h1>Loading...</h1>
+        <Loader />
       ) : error ? (
-        <h3>{error?.data?.message || error?.error}</h3>
+        <Message type="danger">{error?.data?.message || error?.error}</Message>
       ) : (
         <Row className="my-3">
           <Col md={6}>
