@@ -18,3 +18,7 @@
   font-weight: 600;
   padding-left: 0.6rem;
 }
+
+.shipping-text {
+  line-height: 8px;
+}

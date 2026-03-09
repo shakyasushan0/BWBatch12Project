@@ -25,7 +25,6 @@ const orderSchema = new mongoose.Schema(
       address: { type: String, required: true },
       postalCode: { type: String, required: true },
       country: { type: String, required: true },
-      contactNumber: { type: String, required: true },
     },
     itemPrice: { type: Number, required: true },
     taxPrice: { type: Number },
@@ -34,8 +33,8 @@ const orderSchema = new mongoose.Schema(
     paymentMethod: { type: String, default: "cod" },
     isPaid: { type: Boolean, default: false },
     isDelivered: { type: Boolean, default: false },
-    paidAt: { type: String },
-    deliveredAt: { type: String },
+    paidAt: { type: Date },
+    deliveredAt: { type: Date },
   },
   { timestamps: true },
 );

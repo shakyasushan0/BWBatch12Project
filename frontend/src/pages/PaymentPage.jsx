@@ -20,7 +20,7 @@ function PaymentPage() {
   const savePaymentMethodHandler = (e) => {
     e.preventDefault();
     dispatch(savePaymentMethod(payment));
-    navigate("/order");
+    navigate("/placeorder");
   };
   return (
     <FormContainer>

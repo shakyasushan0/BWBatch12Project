@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLoginMutation } from "../slices/userApiSlice";
 import { setCredentials } from "../slices/authSlice";
 import { useLocation, useNavigate } from "react-router";
+import { toast } from "react-toastify";
 
 function SigninPage() {
   const { userInfo } = useSelector((state) => state.auth);
@@ -24,7 +25,7 @@ function SigninPage() {
   }, [userInfo, navigate, redirect]);
   /**
    * useEffect(() => {...}, [dep1, dep2])
-   *  
+   *
    */
   const loginHandler = async (e) => {
     e.preventDefault();
@@ -32,7 +33,7 @@ function SigninPage() {
       const res = await login({ email, password }).unwrap();
       dispatch(setCredentials(res.user));
     } catch (err) {
-      console.log(err?.data?.error || err?.error);
+      toast.error(err?.data?.error || err?.error);
     }
   };
   return (

@@ -5,6 +5,7 @@ import {
   getMyOrders,
   getOrderById,
   getOrders,
+  getPaymentDetails,
   payOrder,
 } from "../controllers/order.controller.js";
 import checkAuth from "../middleware/checkauth.middleware.js";
@@ -18,5 +19,6 @@ router.get("/myorders", checkAuth, getMyOrders);
 router.get("/:id", checkAuth, getOrderById);
 router.put("/:id/pay", checkAuth, payOrder);
 router.put("/:id/deliver", checkAuth, checkAdmin, deliverOrder);
+router.get("/:id/get-payment-details", checkAuth, getPaymentDetails);
 
 export default router;
