@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router";
 import {
+  useDeliverOrderMutation,
   useGetEsewaPaymentDetailsQuery,
   useGetOrderByIdQuery,
 } from "../slices/orderApiSlice";
@@ -14,11 +15,15 @@ import {
 } from "react-bootstrap";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 function OrderPage() {
+  const { userInfo } = useSelector((state) => state.auth);
   const { id } = useParams();
-  const { data: order, isLoading, error } = useGetOrderByIdQuery(id);
+  const { data: order, isLoading, error, refetch } = useGetOrderByIdQuery(id);
   const { data: paymentDetails } = useGetEsewaPaymentDetailsQuery(id);
+  const [deliverOrder, {}] = useDeliverOrderMutation();
   // console.log(paymentDetails.details);
 
   const handleEsewaPayment = () => {
@@ -35,6 +40,16 @@ function OrderPage() {
     document.body.appendChild(form);
     form.submit();
     // console.log(form);
+  };
+
+  const handleOrderDelivery = async () => {
+    try {
+      const res = await deliverOrder({ orderId: order._id }).unwrap();
+      refetch();
+      toast.success(res.message);
+    } catch (err) {
+      toast.error(err.data.error);
+    }
   };
 
   return (
@@ -133,10 +148,23 @@ function OrderPage() {
                     <Col>${order.totalPrice}</Col>
                   </Row>
                 </ListGroup.Item>
-                {order.paymentMethod != "cod" && (
+                {order.paymentMethod != "cod" &&
+                  !order.isPaid &&
+                  !userInfo.isAdmin && (
+                    <ListGroup.Item>
+                      <Button variant="dark" onClick={handleEsewaPayment}>
+                        Pay via Esewa
+                      </Button>
+                    </ListGroup.Item>
+                  )}
+                {userInfo.isAdmin && !order.isDelivered && (
                   <ListGroup.Item>
-                    <Button variant="dark" onClick={handleEsewaPayment}>
-                      Pay via Esewa
+                    <Button
+                      variant="dark"
+                      disabled={!order.isPaid}
+                      onClick={handleOrderDelivery}
+                    >
+                      Mark as Delivered
                     </Button>
                   </ListGroup.Item>
                 )}

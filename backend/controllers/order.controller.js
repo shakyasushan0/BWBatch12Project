@@ -31,7 +31,7 @@ const getMyOrders = async (req, res) => {
 };
 
 const getOrders = async (req, res) => {
-  const orders = await Order.find();
+  const orders = await Order.find().populate("user", "name");
   res.send(orders);
 };
 
@@ -66,11 +66,12 @@ const getPaymentDetails = async (req, res) => {
   const { id } = req.params;
   const order = await Order.findById(id);
   if (!order) return res.status(404).send({ error: "Order not found" });
+  const transaction_uuid = `${Date.now()}_${order._id}`;
   const details = {
     amount: order.itemPrice,
     tax_amount: order.taxPrice,
     total_amount: order.totalPrice,
-    transaction_uuid: order._id,
+    transaction_uuid: transaction_uuid,
     product_code: "EPAYTEST",
     product_service_charge: 0,
     product_delivery_charge: order.shippingCharge,
@@ -80,11 +81,26 @@ const getPaymentDetails = async (req, res) => {
     signature: crypto
       .createHmac("sha256", "8gBm/:&EnhH.1/q")
       .update(
-        `total_amount=${order.totalPrice},transaction_uuid=${order._id},product_code=EPAYTEST`,
+        `total_amount=${order.totalPrice},transaction_uuid=${transaction_uuid},product_code=EPAYTEST`,
       )
       .digest("base64"),
   };
   res.send({ details });
+};
+
+const confirmPayment = async (req, res) => {
+  const { data } = req.query;
+  const { status, transaction_uuid } = JSON.parse(
+    Buffer.from(data, "base64").toString("utf-8"),
+  );
+  if (status == "COMPLETE") {
+    const orderId = transaction_uuid.split("_")[1];
+    const order = await Order.findById(orderId);
+    order.isPaid = true;
+    order.paidAt = new Date();
+    await order.save();
+    return res.redirect("http://localhost:5173/order/" + orderId);
+  }
 };
 
 export {
@@ -95,4 +111,5 @@ export {
   payOrder,
   deliverOrder,
   getPaymentDetails,
+  confirmPayment,
 };
